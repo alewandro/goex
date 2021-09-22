@@ -5,11 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"net"
-	"net/http"
-	"net/url"
-	"time"
-
 	. "github.com/nntaoli-project/goex"
 	"github.com/nntaoli-project/goex/bigone"
 	"github.com/nntaoli-project/goex/binance"
@@ -20,8 +15,14 @@ import (
 	"github.com/nntaoli-project/goex/bittrex"
 	"github.com/nntaoli-project/goex/coinbene"
 	"github.com/nntaoli-project/goex/kucoin"
+
 	"github.com/nntaoli-project/goex/atop"
 	//"github.com/nntaoli-project/goex/coin58"
+	"net"
+	"net/http"
+	"net/url"
+	"time"
+
 	"github.com/nntaoli-project/goex/coinex"
 	"github.com/nntaoli-project/goex/gdax"
 	"github.com/nntaoli-project/goex/hitbtc"
@@ -30,8 +31,6 @@ import (
 	"github.com/nntaoli-project/goex/okex"
 	"github.com/nntaoli-project/goex/poloniex"
 	"github.com/nntaoli-project/goex/zb"
-	"github.com/nntaoli-project/goex/buda"
-	//"github.com/alewandro/goex/buda"
 )
 
 type APIBuilder struct {
@@ -197,8 +196,6 @@ func (builder *APIBuilder) FuturesLever(lever float64) (_builder *APIBuilder) {
 func (builder *APIBuilder) Build(exName string) (api API) {
 	var _api API
 	switch exName {
-	case BUDA:
-		_api = buda.NewAPI(builder.client, builder.apiKey, builder.secretkey)
 	case KUCOIN:
 		_api = kucoin.New(builder.apiKey, builder.secretkey, builder.apiPassphrase)
 	//case OKCOIN_CN:
