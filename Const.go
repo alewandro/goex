@@ -124,6 +124,7 @@ var (
 
 //exchanges const
 const (
+	BUDA 			= "buda.com"
 	KUCOIN          = "kucoin.com"
 	OKCOIN_COM      = "okcoin.com"
 	OKEX            = "okex.com"
