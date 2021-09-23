@@ -135,7 +135,7 @@ type Metadata struct {
 	TotalCount  int `json:"total_count"`
 	TotalPages  int `json:"total_pages"`
 }
-
+/*
 type Order struct {
 	ID             int       `json:"id"`
 	Type           string    `json:"type"`
@@ -161,7 +161,7 @@ type Orders struct {
 	Orders []Order `json:"orders"`
 	Meta Metadata `json:"meta"`
 }
-
+*/
 type DepositData struct {
 	Type    string `json:"type"`
 	Address string `json:"address"`
@@ -288,6 +288,12 @@ func (client *Buda) GetDepth(size int, currency CurrencyPair) (*Depth, error) {
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
+//         Lo que sigue son las FUNCIONES A RE-IMPLEMENTAR
+////////////////////////////////////////////////////////////////////////////////
+/*
+
+
+
 
 func (client *Buda) SignRequest(params...string) (string) {
 	h := hmac.New(sha512.New384, []byte(client.Secret))
@@ -866,3 +872,4 @@ func (client *Buda) GetReceiveAddresses(id int, currency string) (*ReceiveAddres
 	return &receiveAddress.ReceiveAddress, nil
 
 }
+*/
