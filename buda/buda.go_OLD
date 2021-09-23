@@ -36,7 +36,7 @@ const (
 	ElementsPerPage = "300"
 )
 
-type Buda struct {
+type APIClient struct {
 	Key string
 	Secret string
 	Client *http.Client
@@ -225,45 +225,45 @@ type ReceiveAddressSingle struct {
 //     METODOS   NO   IMPLEMENTADOS  de la interface API de goex
 ////////////////////////////////////////////////////////////////////////////////
 
-func (client *Buda) LimitBuy(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
+func (client *APIClient) LimitBuy(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
 	panic("not implement")
 }
-func (client *Buda) LimitSell(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
+func (client *APIClient) LimitSell(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
 	panic("not implement")
 }
-func (client *Buda) MarketBuy(amount, price string, currency CurrencyPair) (*Order, error) {
+func (client *APIClient) MarketBuy(amount, price string, currency CurrencyPair) (*Order, error) {
 	panic("not implement")
 }
-func (client *Buda) MarketSell(amount, price string, currency CurrencyPair) (*Order, error) {
+func (client *APIClient) MarketSell(amount, price string, currency CurrencyPair) (*Order, error) {
 	panic("not implement")
 }
-func (client *Buda) CancelOrder(orderId string, currency CurrencyPair) (bool, error) {
+func (client *APIClient) CancelOrder(orderId string, currency CurrencyPair) (bool, error) {
 	panic("not implement")
 }
-func (client *Buda) GetOneOrder(orderId string, currency CurrencyPair) (*Order, error) {
+func (client *APIClient) GetOneOrder(orderId string, currency CurrencyPair) (*Order, error) {
 	panic("not implement")
 }
-func (client *Buda) GetUnfinishOrders(currency CurrencyPair) ([]Order, error) {
+func (client *APIClient) GetUnfinishOrders(currency CurrencyPair) ([]Order, error) {
 	panic("not implement")
 }
-func (client *Buda) GetOrderHistorys(currency CurrencyPair, optional ...OptionalParameter) ([]Order, error) {
+func (client *APIClient) GetOrderHistorys(currency CurrencyPair, optional ...OptionalParameter) ([]Order, error) {
 	panic("not implement")
 }
-func (client *Buda) GetAccount() (*Account, error) {
+func (client *APIClient) GetAccount() (*Account, error) {
 	panic("not implement")
 }
-func (client *Buda) GetKlineRecords(currency CurrencyPair, period KlinePeriod, size int, opt ...OptionalParameter) ([]Kline, error) {
-	panic("not implement")
-}
-
-func (client *Buda) GetTrades(currencyPair CurrencyPair, since int64) ([]Trade, error) {
-	panic("not implement")
-}
-func (client *Buda) GetTicker(currency CurrencyPair) (*Ticker, error) {
+func (client *APIClient) GetKlineRecords(currency CurrencyPair, period KlinePeriod, size int, opt ...OptionalParameter) ([]Kline, error) {
 	panic("not implement")
 }
 
-func (client *Buda) GetDepth(size int, currency CurrencyPair) (*Depth, error) {
+func (client *APIClient) GetTrades(currencyPair CurrencyPair, since int64) ([]Trade, error) {
+	panic("not implement")
+}
+func (client *APIClient) GetTicker(currency CurrencyPair) (*Ticker, error) {
+	panic("not implement")
+}
+
+func (client *APIClient) GetDepth(size int, currency CurrencyPair) (*Depth, error) {
 	panic("not implement")
 }
 
@@ -272,30 +272,30 @@ func (client *Buda) GetDepth(size int, currency CurrencyPair) (*Depth, error) {
 //         ADAPTERS: la idea es usar las funciones y modificar las respuestas para la interface
 ////////////////////////////////////////////////////////////////////////////////
 
-func NewAPI(client *http.Client, accessKey string, secretKey string) *Buda {
-	return &Buda{accessKey, secretKey, client}
+func NewAPI(client *http.Client, accessKey string, secretKey string) *APIClient {
+	return &APIClient{accessKey, secretKey, client}
 }
 
-func (client *Buda) GetExchangeName() string {
+func (client *APIClient) GetExchangeName() string {
 	return BUDA
 }
 /*
-func (client *Buda) GetDepth(size int, currency CurrencyPair) (*Depth, error) {
+func (client *APIClient) GetDepth(size int, currency CurrencyPair) (*Depth, error) {
 	client.GetOrderBookByMarket()
-//func (client *Buda) GetOrderBookByMarket(marketId string) (*OrderBook, error) {
+//func (client *APIClient) GetOrderBookByMarket(marketId string) (*OrderBook, error) {
 
 	return &depth, nil
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
 
-func (client *Buda) SignRequest(params...string) (string) {
+func (client *APIClient) SignRequest(params...string) (string) {
 	h := hmac.New(sha512.New384, []byte(client.Secret))
 	h.Write([]byte(strings.Join(params, " ")))
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func (client *Buda) AuthenticatedRequest(request *http.Request) (*http.Request, error) {
+func (client *APIClient) AuthenticatedRequest(request *http.Request) (*http.Request, error) {
 	var signature string
 	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano()*1E6, 10)
 
@@ -321,15 +321,15 @@ func (client *Buda) AuthenticatedRequest(request *http.Request) (*http.Request, 
 }
 
 //deprecada
-func NewAPIClient(apiKey string, apiSecret string) (*Buda, error){
- 	return &Buda{Client: &http.Client{}, Key: apiKey, Secret: apiSecret}, nil
+func NewAPIClient(apiKey string, apiSecret string) (*APIClient, error){
+ 	return &APIClient{Client: &http.Client{}, Key: apiKey, Secret: apiSecret}, nil
 }
 
-func (client *Buda) FormatResource(resource string) (string) {
+func (client *APIClient) FormatResource(resource string) (string) {
 	return fmt.Sprintf("%s%s", BaseURL, resource)
 }
 
-func (client *Buda) Get(resource string, private bool) ([]byte, error) {
+func (client *APIClient) Get(resource string, private bool) ([]byte, error) {
 	req, err := http.NewRequest("GET", client.FormatResource(resource), nil)
 	if err != nil {
 		return nil, err
@@ -355,7 +355,7 @@ func (client *Buda) Get(resource string, private bool) ([]byte, error) {
 	return body, nil
 }
 
-func (client *Buda) GetMarkets() ([]Market, error) {
+func (client *APIClient) GetMarkets() ([]Market, error) {
 	var markets Markets
 
 	response, err := client.Get(MarketsEndpoint, false)
@@ -371,7 +371,7 @@ func (client *Buda) GetMarkets() ([]Market, error) {
 	return markets.Markets, nil
 }
 
-func (client *Buda) GetMarket(id int) (*Market, error) {
+func (client *APIClient) GetMarket(id int) (*Market, error) {
 	var market MarketSingle
 
 	data, err := client.Get(fmt.Sprintf(MarketEndpoint, id), false)
@@ -387,7 +387,7 @@ func (client *Buda) GetMarket(id int) (*Market, error) {
 	return &market.Market, nil
 }
 
-func (client *Buda) GetVolumeByMarket(marketId string) (*Volume, error) {
+func (client *APIClient) GetVolumeByMarket(marketId string) (*Volume, error) {
 	var volume VolumeSingle
 
 	data, err := client.Get(fmt.Sprintf(MarketVolumeEndpoint, marketId),false)
@@ -403,7 +403,7 @@ func (client *Buda) GetVolumeByMarket(marketId string) (*Volume, error) {
 	return &volume.Volume, nil
 }
 
-func (client *Buda) GetTickerByMarket(marketId string) (*Ticker, error) {
+func (client *APIClient) GetTickerByMarket(marketId string) (*Ticker, error) {
 	var ticker TickerSingle
 
 	data, err := client.Get(fmt.Sprintf(MarketTickerEndpoint, marketId),false)
@@ -419,7 +419,7 @@ func (client *Buda) GetTickerByMarket(marketId string) (*Ticker, error) {
 	return &ticker.Ticker, nil
 }
 
-func (client *Buda) GetOrderBookByMarket(marketId string) (*OrderBook, error) {
+func (client *APIClient) GetOrderBookByMarket(marketId string) (*OrderBook, error) {
 	var orderBook OrderBookSingle
 
 	data, err := client.Get(fmt.Sprintf(MarketOrderBookEndpoint, marketId),false)
@@ -435,7 +435,7 @@ func (client *Buda) GetOrderBookByMarket(marketId string) (*OrderBook, error) {
 	return &orderBook.OrderBook, nil
 }
 
-func (client *Buda) GetTradesByMarket(marketId string, timestamp string) (*Trade, error) {
+func (client *APIClient) GetTradesByMarket(marketId string, timestamp string) (*Trade, error) {
 	var trades Trades
 	var url string
 
@@ -458,7 +458,7 @@ func (client *Buda) GetTradesByMarket(marketId string, timestamp string) (*Trade
 	return &trades.Trade, nil
 }
 
-func (client *Buda) GetBalances() ([]Balance, error) {
+func (client *APIClient) GetBalances() ([]Balance, error) {
 	var balances Balances
 
 	data, err := client.Get(BalancesEndpoint,true)
@@ -474,7 +474,7 @@ func (client *Buda) GetBalances() ([]Balance, error) {
 	return balances.Balances, nil
 }
 
-func (client *Buda) GetBalanceByCurrency(currency string) (*Balance, error) {
+func (client *APIClient) GetBalanceByCurrency(currency string) (*Balance, error) {
 	var balance BalanceSingle
 
 	data, err := client.Get(BalancesEndpoint + "/" + currency, true)
@@ -490,7 +490,7 @@ func (client *Buda) GetBalanceByCurrency(currency string) (*Balance, error) {
 	return &balance.Balance, nil
 }
 
-func (client *Buda) GetOrderById(id int) (*Order, error) {
+func (client *APIClient) GetOrderById(id int) (*Order, error) {
 	var order OrderSingle
 
 	data, err := client.Get(fmt.Sprintf(OrderEndpoint, id), true)
@@ -506,7 +506,7 @@ func (client *Buda) GetOrderById(id int) (*Order, error) {
 	return &order.Order, nil
 }
 
-func (client *Buda) GetOrdersByMarket(marketId string) ([]Order, error) {
+func (client *APIClient) GetOrdersByMarket(marketId string) ([]Order, error) {
 	var orders Orders
 	var ret []Order
 
@@ -558,7 +558,7 @@ func (client *Buda) GetOrdersByMarket(marketId string) ([]Order, error) {
 	return ret, nil
 }
 
-func (client *Buda) GetOrdersByMarketAndState(marketId string, state string) ([]Order, error) {
+func (client *APIClient) GetOrdersByMarketAndState(marketId string, state string) ([]Order, error) {
 	var orders Orders
 	var ret []Order
 
@@ -611,7 +611,7 @@ func (client *Buda) GetOrdersByMarketAndState(marketId string, state string) ([]
 }
 
 
-func (client *Buda) GetWithdrawalsByCurrency(currency string) ([]Withdrawal, error) {
+func (client *APIClient) GetWithdrawalsByCurrency(currency string) ([]Withdrawal, error) {
 	var withdrawals Withdrawals
 	var ret []Withdrawal
 
@@ -662,7 +662,7 @@ func (client *Buda) GetWithdrawalsByCurrency(currency string) ([]Withdrawal, err
 	return ret, nil
 }
 
-func (client *Buda) GetDepositsByCurrency(currency string) ([]Deposit, error) {
+func (client *APIClient) GetDepositsByCurrency(currency string) ([]Deposit, error) {
 
 	var deposits Deposits
 	var ret []Deposit
@@ -714,7 +714,7 @@ func (client *Buda) GetDepositsByCurrency(currency string) ([]Deposit, error) {
 	return ret, nil
 }
 
-func (client *Buda) GetDepositsByCurrencyAndState(currency string, state string) ([]Deposit, error) {
+func (client *APIClient) GetDepositsByCurrencyAndState(currency string, state string) ([]Deposit, error) {
 
 	var deposits Deposits
 	var ret []Deposit
@@ -766,7 +766,7 @@ func (client *Buda) GetDepositsByCurrencyAndState(currency string, state string)
 	return ret, nil
 }
 
-func (client *Buda) GetWithdrawalsByCurrencyAndState(currency string, state string) ([]Withdrawal, error) {
+func (client *APIClient) GetWithdrawalsByCurrencyAndState(currency string, state string) ([]Withdrawal, error) {
 
 	var withdrawals Withdrawals
 	var ret []Withdrawal
@@ -818,7 +818,7 @@ func (client *Buda) GetWithdrawalsByCurrencyAndState(currency string, state stri
 	return ret, nil
 }
 
-func (client *Buda) GetWithdrawalFeeByCurrency(currency string) (*Fee, error) {
+func (client *APIClient) GetWithdrawalFeeByCurrency(currency string) (*Fee, error) {
 	var fee FeeSingle
 
 	data, err := client.Get(fmt.Sprintf(WithdrawalFeeEndpoint, currency), true)
@@ -834,7 +834,7 @@ func (client *Buda) GetWithdrawalFeeByCurrency(currency string) (*Fee, error) {
 	return &fee.Fee, nil
 }
 
-func (client *Buda) GetDepositFeeByCurrency(currency string) (*Fee, error) {
+func (client *APIClient) GetDepositFeeByCurrency(currency string) (*Fee, error) {
 	var fee FeeSingle
 
 	data, err := client.Get(fmt.Sprintf(DepositFeeEndpoint, currency), true)
@@ -850,7 +850,7 @@ func (client *Buda) GetDepositFeeByCurrency(currency string) (*Fee, error) {
 	return &fee.Fee, nil
 }
 
-func (client *Buda) GetReceiveAddresses(id int, currency string) (*ReceiveAddress, error) {
+func (client *APIClient) GetReceiveAddresses(id int, currency string) (*ReceiveAddress, error) {
 	var receiveAddress ReceiveAddressSingle
 
 	data, err := client.Get(fmt.Sprintf(ReceiveAddressEndpoint, currency, string(id)), true)
